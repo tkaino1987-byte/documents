@@ -3,208 +3,451 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>アプリケーションアーキテクチャ設計例</title>
+  <title>アプリケーション設計で重視している設計観点</title>
   <style>
     :root {
-      --bg: #f7f8fa;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #4b5563;
-      --line: #d1d5db;
-      --accent: #1d4ed8;
-      --accent-soft: #eff6ff;
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fbff;
+      --text: #1d2736;
+      --muted: #5e6a79;
+      --line: #d9e3ef;
+      --accent: #1e4fa3;
+      --accent-soft: #eaf2ff;
+      --shadow: 0 10px 28px rgba(20, 40, 76, 0.08);
+      --radius: 18px;
     }
+
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", sans-serif;
-      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
       color: var(--text);
-      line-height: 1.75;
+      background: linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+      line-height: 1.85;
     }
+
     .container {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 40px 24px 64px;
+      padding: 36px 20px 72px;
     }
-    .header {
-      background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
-      border: 1px solid #bfdbfe;
-      border-radius: 16px;
-      padding: 28px 32px;
+
+    .hero {
+      background: linear-gradient(135deg, #173a73 0%, #2558b0 100%);
+      color: #fff;
+      border-radius: 26px;
+      padding: 42px;
+      box-shadow: var(--shadow);
       margin-bottom: 24px;
     }
-    h1 {
-      margin: 0 0 10px;
-      font-size: 30px;
-      line-height: 1.3;
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
     }
+
+    .hero h1 {
+      margin: 0 0 14px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.35;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 880px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.94);
+    }
+
+    .intro {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 26px;
+      margin-bottom: 20px;
+    }
+
+    .intro h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+
+    .intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 0 0 24px;
+    }
+
+    .toc a {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .toc a:hover {
+      transform: translateY(-2px);
+      border-color: #b9cdeb;
+    }
+
+    .toc .toc-no {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .toc .toc-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-no {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--accent-soft);
+      border: 1px solid #cfe0ff;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .section-title-wrap {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .section-title-wrap h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.4;
+    }
+
     .lead {
       margin: 0;
       color: var(--muted);
       font-size: 15px;
     }
-    .note {
-      margin-top: 14px;
-      padding: 14px 16px;
-      background: var(--accent-soft);
-      border-left: 4px solid var(--accent);
-      border-radius: 10px;
-      font-size: 14px;
+
+    .items {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
     }
-    .section {
-      background: var(--card);
+
+    .item {
+      background: var(--surface-soft);
+      border: 1px solid #e5edf7;
+      border-radius: 14px;
+      padding: 18px 18px 16px;
+    }
+
+    .item h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      line-height: 1.6;
+      color: #163967;
+    }
+
+    .item p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .footer-note {
+      background: #f2f7fd;
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 24px 28px;
-      margin-bottom: 18px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-    }
-    h2 {
-      margin: 0 0 8px;
-      font-size: 22px;
-      line-height: 1.4;
-    }
-    .section-summary {
-      margin: 0 0 18px;
+      padding: 20px 22px;
       color: var(--muted);
       font-size: 14px;
-    }
-    ul {
-      margin: 0;
-      padding-left: 1.2em;
-    }
-    li { margin-bottom: 14px; }
-    li:last-child { margin-bottom: 0; }
-    strong {
-      color: #111827;
-    }
-    .footer {
       margin-top: 28px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: right;
     }
-    @media (max-width: 700px) {
-      .container { padding: 20px 14px 40px; }
-      .header, .section { padding: 18px; }
-      h1 { font-size: 24px; }
-      h2 { font-size: 19px; }
+
+    @media (max-width: 680px) {
+      .container { padding: 20px 14px 48px; }
+      .hero { padding: 28px 22px; }
+      .section { padding: 22px 18px; }
+      .section-title-wrap h2 { font-size: 23px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>アプリケーションアーキテクチャ設計例</h1>
-      <p class="lead">
-        システム全体の構造・データ・処理・運用を踏まえ、再利用性・拡張性・保守性・性能・安全性を意識して設計してきた主な観点を整理した補足資料です。
+    <header class="hero">
+      <div class="hero-badge">APPLICATION ARCHITECTURE VIEWPOINTS</div>
+      <h1>アプリケーション設計で重視している設計観点</h1>
+      <p>
+        業務系Webシステム開発において、機能実装だけではなく、変更容易性・整合性・安全性・運用性・性能まで含めて成立するアプリケーションを設計するために、実務上重視している観点を整理しています。
       </p>
-      <div class="note">
-        個別プロジェクトの成果は職務経歴書本体に記載し、本資料では横断的に担ってきた「共通設計の観点」をまとめています。
+    </header>
+
+    <section class="intro">
+      <h2>このページについて</h2>
+      <p>
+        以下は、私がアプリケーション設計してきた経験において特に要所となった観点をまとめたものです。実務経験的な項目だてであり、学術的な体系には沿っておりませんし不足もあります。今後は体系的なインプットを元に項目を整理していく方針です。
+      </p>
+    </section>
+
+    <nav class="toc" aria-label="目次">
+      <a href="#sec1"><span class="toc-no">01</span><span class="toc-title">アプリケーション構造・責務設計</span></a>
+      <a href="#sec2"><span class="toc-no">02</span><span class="toc-title">インターフェース・画面制御設計</span></a>
+      <a href="#sec3"><span class="toc-no">03</span><span class="toc-title">認証・認可・安全性設計</span></a>
+      <a href="#sec4"><span class="toc-no">04</span><span class="toc-title">データ設計・データ取扱い方針</span></a>
+      <a href="#sec5"><span class="toc-no">05</span><span class="toc-title">業務処理・整合性制御設計</span></a>
+      <a href="#sec6"><span class="toc-no">06</span><span class="toc-title">共通ルール・例外・運用設計</span></a>
+      <a href="#sec7"><span class="toc-no">07</span><span class="toc-title">標準化</span></a>
+      <a href="#sec8"><span class="toc-no">08</span><span class="toc-title">品質・性能担保設計</span></a>
+    </nav>
+
+    <section class="section" id="sec1">
+      <div class="section-head">
+        <div class="section-no">01</div>
+        <div class="section-title-wrap">
+          <h2>アプリケーション構造・責務設計</h2>
+          <p class="lead">システム全体の見通しと変更容易性を高め、機能追加・仕様変更時の影響範囲を抑えるための設計方針</p>
+        </div>
       </div>
+      <div class="items">
+        <article class="item">
+          <h3>レイヤ責務設計（Controller / Service / Repository の責務分離）</h3>
+          <p>画面制御・業務ロジック・データアクセスの責務を明確に分離し、変更・拡張時の影響範囲を局所化できる構成とすること</p>
+        </article>
+        <article class="item">
+          <h3>モジュール構成（基底クラス・共通処理の配置）</h3>
+          <p>継承・実装元クラス、共通ユーティリティ等の配置ルールを整理し、重複実装を抑えながら保守しやすい構造とすること</p>
+        </article>
+        <article class="item">
+          <h3>共通部品／共通関数の設計方針</h3>
+          <p>共通化すべき処理と個別機能に閉じるべき処理を切り分け、過剰な共通化や密結合を避けつつ、バランスをとりながら再利用性を高める設計とすること</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sec2">
+      <div class="section-head">
+        <div class="section-no">02</div>
+        <div class="section-title-wrap">
+          <h2>インターフェース・画面制御設計</h2>
+          <p class="lead">画面・API間の整合性を保ち、安全かつ分かりやすいデータ受け渡しを実現するための設計方針</p>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item">
+          <h3>各種パス（画面やAPIエンドポイント）設計</h3>
+          <p>URLやAPIパスの命名・階層・機能単位での分割方針を整理し、拡張しやすく分かりやすいパス階層とすること</p>
+        </article>
+        <article class="item">
+          <h3>画面遷移間でのデータ受け渡し方針</h3>
+          <p>リクエスト、Hidden、セッション等の使い分けを定義し、不要な状態保持や情報の持ち回りを抑えた設計とすること</p>
+        </article>
+        <article class="item">
+          <h3>状態（ステート／セッション）管理方針</h3>
+          <p>セッションに保持する情報の範囲、ライフサイクル、破棄タイミングを明確化し、状態不整合や肥大化を防止すること</p>
+        </article>
+        <article class="item">
+          <h3>フロント及びサーバ（API）でのバリデーションチェック方針</h3>
+          <p>UI上の即時チェックとサーバ側の最終チェックの役割を分離し、不正入力を防止しつつ、ユーザビリティ確保も両立すること</p>
+        </article>
+        <article class="item">
+          <h3>エラーメッセージ出力（メッセージエリアやダイアログ）方針</h3>
+          <p>画面上の表示位置、通知方法、利用者向けメッセージ粒度を整理し、分かりやすく一貫したエラー表示方式とすること</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sec3">
+      <div class="section-head">
+        <div class="section-no">03</div>
+        <div class="section-title-wrap">
+          <h2>認証・認可・安全性設計</h2>
+          <p class="lead">利用者の識別、権限制御、不正利用防止を含む安全性を担保するための設計方針</p>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item">
+          <h3>認証方式設計（ログイン認証、セッション維持、タイムアウト、再認証方針）</h3>
+          <p>認証後のセッション維持方法、タイムアウト条件、重要操作時の再認証要否などを定義し、安全性と操作性の両立を図る設計とすること</p>
+        </article>
+        <article class="item">
+          <h3>画面及びAPI権限制御（ロールベースアクセス制御）</h3>
+          <p>役割単位で参照・更新・管理などの権限を整理し、画面表示制御とAPI実行制御の両面で一貫した認可設計とすること</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sec4">
+      <div class="section-head">
+        <div class="section-no">04</div>
+        <div class="section-title-wrap">
+          <h2>データ設計・データ取扱い方針</h2>
+          <p class="lead">データの整合性・一貫性・検索性能を意識し、画面・API・DBをまたいだ取扱いルールを統一するための設計方針</p>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item">
+          <h3>DB設計（マスタ・トランザクションデータテーブレイアウト、インデックスや外部キー設定）</h3>
+          <p>データ特性に応じたテーブル構成、検索頻度を踏まえたインデックス、整合性を担保する外部キー設定など</p>
+        </article>
+        <article class="item">
+          <h3>データ型（日付や数値型など）フォーマット設計</h3>
+          <p>日付・数値・桁数・小数・表示形式の扱いを統一し、画面・API・DB間の不整合や変換漏れをすること</p>
+        </article>
+        <article class="item">
+          <h3>コード管理（保存や変換箇所設計）方針</h3>
+          <p>区分値・コード値の保持形式や表示名称への変換責務を整理し、変換ロジックの散在を防ぐ設計とすること</p>
+        </article>
+        <article class="item">
+          <h3>データアクセス方式設計</h3>
+          <p>SQL配置、共通化単位、マッピング方針を整理し、可読性・再利用性・保守性を考慮したデータアクセス方式とすること</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sec5">
+      <div class="section-head">
+        <div class="section-no">05</div>
+        <div class="section-title-wrap">
+          <h2>業務処理・整合性制御設計</h2>
+          <p class="lead">業務処理の整合性を保ち、競合や障害発生時にも安全に処理できるようにするための設計方針</p>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item">
+          <h3>トランザクション設計</h3>
+          <p>更新処理の単位、コミット／ロールバック境界を明確化し、処理途中の不整合や中途半端な更新が発生し得ないようにすること</p>
+        </article>
+        <article class="item">
+          <h3>排他制御（楽観or排他、具体的な判定方式）設計</h3>
+          <p>更新競合の検知方式や再実行方針を整理し、二重更新や上書き事故を防ぐ制御方式とすること</p>
+        </article>
+        <article class="item">
+          <h3>非同期／バッチ連携設計（画面処理とバッチ処理の責務分離、再実行、リトライ方針）</h3>
+          <p>即時処理と後続処理の切り分け、障害時の再実行やリトライ条件を整理し、安定運用しやすい処理構成とすること</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sec6">
+      <div class="section-head">
+        <div class="section-no">06</div>
+        <div class="section-title-wrap">
+          <h2>共通ルール・例外・運用設計</h2>
+          <p class="lead">開発・障害対応・運用保守のしやすさを高めるために、横断的な共通ルールを整理する設計方針</p>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item">
+          <h3>設定値／定数管理方針（環境差分、外部設定化、マスタ・定数の持ち方）</h3>
+          <p>環境ごとの差分項目、外部設定化の対象、アプリ定数とマスタ値の切り分けを明確化し、変更容易性を確保すること</p>
+        </article>
+        <article class="item">
+          <h3>メッセージ管理方針</h3>
+          <p>画面表示文言、エラー文言、通知文言などの管理単位を統一し、変更時の影響範囲を抑えながら一貫した文言管理とすること</p>
+        </article>
+        <article class="item">
+          <h3>例外（例外クラス定義やエラーハンドリング）処理設計</h3>
+          <p>業務例外・システム例外の分類、ハンドリング箇所、利用者通知と内部処理の切り分けを整理し、障害時の挙動を統一・明確化すること</p>
+        </article>
+        <article class="item">
+          <h3>ログ出力方式設計</h3>
+          <p>出力対象、ログレベル、トレース単位、障害調査に必要な情報粒度を整理し、保守運用で追跡しやすいログ構成＆出力方式とすること</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sec7">
+      <div class="section-head">
+        <div class="section-no">07</div>
+        <div class="section-title-wrap">
+          <h2>標準化</h2>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item">
+          <h3>ID（画面ID／機能ID／テーブルIDなど）体系設計</h3>
+          <p>管理用IDの体系や採番ルールを統一し、設計書・ログ・障害調査時に追跡しやすい構造を整備すること</p>
+        </article>
+        <article class="item">
+          <h3>命名規約（論理名／物理名）設計</h3>
+          <p>変数名、クラス名、テーブル名、項目名の命名粒度やルールを統一し、可読性と保守性を持たせること</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sec8">
+      <div class="section-head">
+        <div class="section-no">08</div>
+        <div class="section-title-wrap">
+          <h2>品質・性能担保設計</h2>
+          <p class="lead">機能実現だけでなく、性能・品質・検証しやすさまで含めてアプリケーション全体の成立性を担保するための設計方針</p>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item">
+          <h3>性能設計</h3>
+          <p>性能ボトルネックになりやすい箇所を見越し、SQL発行回数、検索条件、一覧表示（ページング）、キャッシュ利用方針などを設計段階から調整すること</p>
+        </article>
+        <article class="item">
+          <h3>テスト設計（各機能の独立性、依存関係の方針統一）</h3>
+          <p>テストしやすい単位で機能責務や依存関係を整理し、単体・結合試験で検証しやすい構造を意識して設計すること</p>
+        </article>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      補足：資料／HTML形式
     </div>
-
-    <section class="section">
-      <h2>1. アプリケーション構造・責務設計</h2>
-      <p class="section-summary">システム全体の見通しと変更容易性を高め、機能追加時の影響範囲を抑えるための設計。</p>
-      <ul>
-        <li><strong>レイヤ責務設計（Controller / Service / Repository の責務分離）</strong><br>
-          画面制御・業務ロジック・データアクセスの責務を明確に分離し、修正時の影響範囲を局所化できる構成を設計。</li>
-        <li><strong>モジュール構成（基底画面や共通処理クラスの配置構成）</strong><br>
-          画面共通処理、認可、入力補助、共通ユーティリティ等の配置ルールを整理し、重複実装を抑えながら保守しやすい構造を設計。</li>
-        <li><strong>共通部品／共通関数の設計方針</strong><br>
-          共通化すべき処理と個別機能に閉じるべき処理を切り分け、過剰な共通化や密結合を避けつつ、再利用性を高める設計方針を整理。</li>
-        <li><strong>命名規約（論理名／物理名）設計</strong><br>
-          変数名、クラス名、テーブル名、項目名の命名粒度やルールを統一し、可読性と保守性を向上。</li>
-        <li><strong>ID（画面ID／機能ID／テーブルIDなど）体系設計</strong><br>
-          管理用IDの体系や採番ルールを統一し、設計書・ログ・障害調査時に追跡しやすい構造を整備。</li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>2. インターフェース・画面制御設計</h2>
-      <p class="section-summary">画面・API間の整合性を保ち、安全かつ分かりやすいデータ受け渡しを実現するための設計。</p>
-      <ul>
-        <li><strong>各種パス（画面やAPIエンドポイント）設計</strong><br>
-          URLやAPIパスの命名・階層・機能単位での分割方針を整理し、拡張しやすく分かりやすいインターフェースを設計。</li>
-        <li><strong>画面遷移間でのデータ受け渡し方針</strong><br>
-          リクエスト、Hidden、セッション等の使い分けを定義し、不要な状態保持や情報の持ち回りを抑えた設計を実施。</li>
-        <li><strong>状態（ステート／セッション）管理方針</strong><br>
-          セッションに保持する情報の範囲、ライフサイクル、破棄タイミングを明確化し、状態不整合や肥大化を防止。</li>
-        <li><strong>フロント及びサーバ（API）でのバリデーションチェック方針</strong><br>
-          UI上の即時チェックとサーバ側の最終チェックの役割を分離し、不正入力防止とユーザビリティを両立。</li>
-        <li><strong>エラーメッセージ出力（メッセージエリアやダイアログ）方針</strong><br>
-          画面上の表示位置、通知方法、利用者向けメッセージ粒度を整理し、分かりやすく一貫したエラー表示方式を設計。</li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>3. 認証・認可・安全性設計</h2>
-      <p class="section-summary">利用者の識別、権限制御、不正利用防止を含む安全性を担保するための設計。</p>
-      <ul>
-        <li><strong>認証方式設計（ログイン認証、セッション維持、タイムアウト、再認証方針）</strong><br>
-          認証後のセッション維持方法、タイムアウト条件、重要操作時の再認証要否などを定義し、安全性と操作性の両立を図る設計を実施。</li>
-        <li><strong>画面及びAPI権限制御（ロールベースアクセス制御）</strong><br>
-          役割単位で参照・更新・管理などの権限を整理し、画面表示制御とAPI実行制御の両面で一貫した認可設計を実施。</li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>4. データ設計・データ取扱い方針</h2>
-      <p class="section-summary">データの整合性・一貫性・検索性能を意識し、画面・API・DBをまたいだ取扱いルールを統一するための設計。</p>
-      <ul>
-        <li><strong>DB設計（マスタ・トランザクションデータテーブレイアウト、インデックスや外部キー設定）</strong><br>
-          データ特性に応じたテーブル構成、検索頻度を踏まえたインデックス、整合性を担保する外部キー等を設計。</li>
-        <li><strong>データ型（日付や数値型など）フォーマット設計</strong><br>
-          日付・数値・桁数・小数・表示形式の扱いを統一し、画面・API・DB間の不整合や変換漏れを防止。</li>
-        <li><strong>コード管理（保存や変換箇所設計）方針</strong><br>
-          区分値・コード値の保持形式や表示名称への変換責務を整理し、変換ロジックの散在を防ぐ設計を実施。</li>
-        <li><strong>データアクセス方式（MyBatisによる共通SQLやマッピング）設計</strong><br>
-          SQL配置、共通化単位、マッピング方針を整理し、可読性・再利用性・保守性を考慮したデータアクセス構造を設計。</li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>5. 業務処理・整合性制御設計</h2>
-      <p class="section-summary">業務処理の整合性を保ち、競合や障害発生時にも安全に処理できるようにするための設計。</p>
-      <ul>
-        <li><strong>トランザクション設計</strong><br>
-          更新処理の単位、コミット／ロールバック境界を明確化し、処理途中の不整合や中途半端な更新を防止。</li>
-        <li><strong>排他制御（楽観or排他、具体的な判定方式）設計</strong><br>
-          更新競合の検知方式や再実行方針を整理し、二重更新や上書き事故を防ぐ制御方式を設計。</li>
-        <li><strong>非同期／バッチ連携設計（画面処理とバッチ処理の責務分離、再実行、リトライ方針）</strong><br>
-          即時処理と後続処理の切り分け、障害時の再実行やリトライ条件を整理し、安定運用しやすい処理構成を設計。</li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>6. 共通ルール・例外・運用設計</h2>
-      <p class="section-summary">開発・障害対応・運用保守のしやすさを高めるために、横断的な共通ルールを整理する設計。</p>
-      <ul>
-        <li><strong>設定値／定数管理方針（環境差分、外部設定化、マスタ・定数の持ち方）</strong><br>
-          環境ごとの差分項目、外部設定化の対象、アプリ定数とマスタ値の切り分けを明確化し、変更容易性を向上。</li>
-        <li><strong>メッセージ管理方針</strong><br>
-          画面表示文言、エラー文言、通知文言などの管理単位を統一し、変更時の影響範囲を抑えながら一貫した文言管理を実現。</li>
-        <li><strong>例外（例外クラス定義やエラーハンドリング）処理設計</strong><br>
-          業務例外・システム例外の分類、ハンドリング箇所、利用者通知と内部処理の切り分けを整理し、障害時の挙動を明確化。</li>
-        <li><strong>ログ出力方式設計</strong><br>
-          出力対象、ログレベル、トレース単位、障害調査に必要な情報粒度を整理し、保守運用で追跡しやすいログ構成を設計。</li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>7. 品質・性能担保設計</h2>
-      <p class="section-summary">機能実現だけでなく、性能・品質・検証しやすさまで含めてアプリケーション全体の成立性を担保するための設計。</p>
-      <ul>
-        <li><strong>性能設計（SQL発行方針、N+1回避、検索条件設計、ページング、キャッシュ利用方針）</strong><br>
-          性能ボトルネックになりやすい箇所を見越し、SQL発行回数、検索条件、一覧表示、キャッシュ利用方針などを設計段階から整理。</li>
-        <li><strong>テスト設計（各機能の独立性、依存関係の方針統一）</strong><br>
-          テストしやすい単位で機能責務や依存関係を整理し、単体・結合試験で検証しやすい構造を意識して設計。</li>
-      </ul>
-    </section>
-
-    <div class="footer">補足資料案 / HTML形式</div>
   </div>
 </body>
 </html>
