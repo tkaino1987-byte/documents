@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>アーキテクト概念マップ｜時間軸 × 観点軸</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #1f2937;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --primary-soft: #eaf1ff;
+      --accent: #0f766e;
+      --accent-soft: #e6fffb;
+      --warning: #b45309;
+      --warning-soft: #fff7ed;
+      --danger: #be123c;
+      --danger-soft: #fff1f2;
+      --shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 34rem),
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 30rem),
+        var(--bg);
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 40px 0 72px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 40px;
+      border: 1px solid rgba(219, 227, 239, 0.9);
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(248,250,252,0.92));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -120px -160px auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.16), rgba(15,118,110,0.14));
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 6px 12px;
+      border: 1px solid rgba(37, 99, 235, 0.18);
+      border-radius: 999px;
+      color: var(--primary-dark);
+      background: var(--primary-soft);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.22;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .hero-meta {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .meta-chip {
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 24px;
+      margin-top: 28px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .sidebar h2 {
+      margin: 0 0 12px;
+      color: #0f172a;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-list a {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 10px;
+      border-radius: 11px;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 700;
+      transition: 0.18s ease;
+    }
+
+    .nav-list a:hover {
+      color: var(--primary-dark);
+      background: var(--primary-soft);
+      transform: translateX(2px);
+    }
+
+    .nav-num {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      background: #eef2ff;
+      color: var(--primary-dark);
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .legend {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .legend-item {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 76px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .badge-design { background: var(--primary-soft); color: var(--primary-dark); }
+    .badge-action { background: var(--accent-soft); color: #0f766e; }
+    .badge-output { background: var(--warning-soft); color: var(--warning); }
+
+    .content {
+      display: grid;
+      gap: 28px;
+      min-width: 0;
+    }
+
+    .phase {
+      position: relative;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: var(--shadow);
+      scroll-margin-top: 28px;
+    }
+
+    .phase-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .phase-kicker {
+      margin: 0 0 6px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .phase h2 {
+      margin: 0;
+      color: #0f172a;
+      font-size: clamp(22px, 2.7vw, 30px);
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+
+    .phase-count {
+      display: inline-grid;
+      place-items: center;
+      min-width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--primary), #0f766e);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 900;
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.2);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .topic-card {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      transition: 0.18s ease;
+    }
+
+    .topic-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(37, 99, 235, 0.28);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .topic-title {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 0;
+      color: #0f172a;
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    .topic-no {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .topic-body {
+      display: grid;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: grid;
+      gap: 5px;
+      padding: 12px;
+      border-radius: 13px;
+      background: var(--surface-soft);
+      border: 1px solid #edf2f7;
+    }
+
+    .info-row p {
+      margin: 0;
+      color: #334155;
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .info-row .label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-note {
+      margin-top: 28px;
+      padding: 18px 20px;
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.65);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .nav-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 24px, 1180px);
+        padding-top: 18px;
+      }
+
+      .hero,
+      .phase {
+        padding: 22px;
+        border-radius: 22px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phase-header {
+        align-items: flex-start;
+      }
+
+      .phase-count {
+        min-width: 44px;
+        height: 44px;
+        border-radius: 15px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav-list {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-meta {
+        display: grid;
+      }
+
+      .legend-item {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Architecture Concept Map</p>
+      <h1>アーキテクト概念マップ<br />時間軸 × 観点軸</h1>
+      <p class="lead">
+        要件定義から運用・保守、全フェーズ横断まで、アーキテクトが検討・設計・合意形成すべき観点をフェーズ別に整理した概念マップです。
+        各項目を「設計内容」「行動」「成果物」に分け、実務で何を考え、何を実行し、何を残すべきかを見通しやすくしています。
+      </p>
+      <div class="hero-meta" aria-label="概要">
+        <span class="meta-chip">7フェーズ</span>
+        <span class="meta-chip">44観点</span>
+        <span class="meta-chip">設計内容・行動・成果物で整理</span>
+        <span class="meta-chip">GitHub Pages配置向け単一HTML</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="目次">
+        <h2>目次</h2>
+        <ol class="nav-list">
+          <li><a href="#phase-1"><span class="nav-num">1</span>要件定義</a></li>
+          <li><a href="#phase-2"><span class="nav-num">2</span>基本設計</a></li>
+          <li><a href="#phase-3"><span class="nav-num">3</span>詳細設計</a></li>
+          <li><a href="#phase-4"><span class="nav-num">4</span>実装</a></li>
+          <li><a href="#phase-5"><span class="nav-num">5</span>テスト</a></li>
+          <li><a href="#phase-6"><span class="nav-num">6</span>運用・保守</a></li>
+          <li><a href="#phase-7"><span class="nav-num">7</span>全フェーズ横断</a></li>
+        </ol>
+
+        <div class="legend" aria-label="凡例">
+          <div class="legend-item"><span class="badge badge-design">設計内容</span><span>何を設計判断として定義するか</span></div>
+          <div class="legend-item"><span class="badge badge-action">行動</span><span>実務上どのように進めるか</span></div>
+          <div class="legend-item"><span class="badge badge-output">成果物</span><span>説明・合意・継承のために残すもの</span></div>
+        </div>
+      </aside>
+
+      <div class="content">
+        <section class="phase" id="phase-1">
+          <header class="phase-header">
+            <div>
+              <p class="phase-kicker">Phase 01</p>
+              <h2>要件定義フェーズ</h2>
+            </div>
+            <span class="phase-count">1</span>
+          </header>
+          <div class="card-grid">
+            <article class="topic-card">
+              <h3 class="topic-title"><span class="topic-no">1.1</span>ビジネス・ステークホルダー</h3>
+              <div class="topic-body">
+                <div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>ビジネス目標・KPI・成功基準をアーキテクチャ要件に翻訳する</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>経営層・事業部門へのヒアリング、ステークホルダーマップ作成、優先度の合意形成</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>ステークホルダー一覧、ビジネスゴール整理表、KGI/KPI定義</p></div>
+              </div>
+            </article>
+            <article class="topic-card">
+              <h3 class="topic-title"><span class="topic-no">1.2</span>機能要件</h3>
+              <div class="topic-body">
+                <div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>システムが実現すべき業務機能を構造化して整理する</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>ユースケース抽出、業務フロー分析、要件のMoSCoW分類</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>機能要件一覧、ユースケース図、業務フロー図</p></div>
+              </div>
+            </article>
+            <article class="topic-card">
+              <h3 class="topic-title"><span class="topic-no">1.3</span>非機能要件</h3>
+              <div class="topic-body">
+                <div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>性能・可用性・セキュリティ等の品質特性を計測可能な要件として定義する</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>品質特性カテゴリごとの要求引き出し、定量基準の合意</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>非機能要件一覧、SLA/SLO草案、品質特性シナリオ</p></div>
+              </div>
+            </article>
+            <article class="topic-card">
+              <h3 class="topic-title"><span class="topic-no">1.4</span>制約条件</h3>
+              <div class="topic-body">
+                <div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>技術・コスト・組織・法規制などの制約を明確化し、設計の前提として固定する</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>既存資産調査、予算・期間確認、法規制・標準調査</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>制約条件一覧、前提条件リスト</p></div>
+              </div>
+            </article>
+            <article class="topic-card">
+              <h3 class="topic-title"><span class="topic-no">1.5</span>ドメイン理解</h3>
+              <div class="topic-body">
+                <div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>業務ドメインの概念・用語・ビジネスルールを共通言語化する</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>ドメインエキスパートとの対話、イベントストーミング、ユビキタス言語の整理</p></div>
+                <div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>ドメインモデル概要、用語集（ユビキタス言語）、業務イベント一覧</p></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase" id="phase-2">
+          <header class="phase-header">
+            <div>
+              <p class="phase-kicker">Phase 02</p>
+              <h2>基本設計（アーキテクチャ設計）フェーズ</h2>
+            </div>
+            <span class="phase-count">2</span>
+          </header>
+          <div class="card-grid">
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.1</span>アプリケーションアーキテクチャ</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>アーキテクチャスタイル・パターンを選定し、システム全体の構造を規定する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>モノリス/マイクロサービス/イベント駆動等の比較検討、レイヤ・境界の定義、リファレンスアーキテクチャ参照</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>全体構成図、コンポーネント分割表、スタイル選定理由書</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.2</span>インフラ・クラウド</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>実行基盤の構成・配置・スケーリング戦略を設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>クラウドサービス選定、ネットワーク構成設計、IaC方針決定</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>インフラ構成図、ネットワーク図、IaCテンプレート方針</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.3</span>データアーキテクチャ</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>データの永続化方式・整合性モデル・データフローを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>RDB/NoSQL/DWHの選定、整合性レベル決定、データ流通設計</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>データアーキテクチャ図、論理データモデル、データフロー図</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.4</span>インテグレーション</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>内外システム間の通信方式・連携パターンを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>同期/非同期の選定、API/メッセージング方式決定、契約定義</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>システム連携図、API一覧、メッセージスキーマ</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.5</span>セキュリティアーキテクチャ</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>認証認可・暗号化・脅威対策をアーキテクチャレベルで組み込む</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>脅威モデリング（STRIDE等）、認証認可方式選定、ゼロトラスト適用検討</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>セキュリティ設計書、脅威モデル図、認証認可フロー図</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.6</span>品質特性・トレードオフ</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>非機能要件を満たすための設計判断を品質特性間のトレードオフとして整理する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>ATAM等の評価手法適用、トレードオフ表作成、リスク識別</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>品質特性シナリオ、トレードオフ分析表、アーキテクチャリスク一覧</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.7</span>アーキテクチャ意思決定</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>重要な設計判断とその理由・代替案・影響を記録する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>ADR作成、レビュー、バージョン管理</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>ADR集（Architecture Decision Records）</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">2.8</span>アーキテクチャ表現</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>ステークホルダー別に適切な抽象度でアーキテクチャを可視化する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>C4モデルでのレベル別作図、UML/arc42準拠ドキュメント作成</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>コンテキスト図、コンテナ図、コンポーネント図、アーキテクチャ概要書</p></div></div></article>
+          </div>
+        </section>
+
+        <section class="phase" id="phase-3">
+          <header class="phase-header">
+            <div>
+              <p class="phase-kicker">Phase 03</p>
+              <h2>詳細設計フェーズ</h2>
+            </div>
+            <span class="phase-count">3</span>
+          </header>
+          <div class="card-grid">
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">3.1</span>アプリケーション内部構造</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>レイヤ分割・モジュール構造・依存方向を具体化する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>パッケージ構造設計、依存関係ルール定義、Clean/Hexagonal等の適用</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>モジュール構成図、依存関係図、パッケージ規約</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">3.2</span>ドメインモデリング</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>DDD戦術的設計に基づきドメインオブジェクトを詳細化する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>集約境界の決定、エンティティ/値オブジェクトの設計、ドメインサービス抽出</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>クラス図、集約一覧、ドメインモデル詳細仕様</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">3.3</span>API詳細設計</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>公開APIのエンドポイント・スキーマ・バージョニング戦略を定義する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>REST/GraphQL/gRPC設計、リソース/操作の整理、バージョニング規約策定</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>OpenAPI/AsyncAPI仕様書、API設計書</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">3.4</span>データ詳細設計</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>物理データモデル・インデックス戦略・パーティショニングを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>テーブル設計、正規化/非正規化判断、インデックス・パーティション設計</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>物理ER図、テーブル定義書、インデックス設計書</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">3.5</span>画面・UI設計</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>フロントエンド構造・状態管理・BFF責務を設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>画面遷移設計、コンポーネント設計、状態管理方式選定</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>画面遷移図、UIコンポーネント仕様、BFF設計書</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">3.6</span>例外・エラーハンドリング</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>エラー分類・伝播ルール・リトライ戦略を統一的に設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>エラーコード体系設計、例外階層整理、リトライ/サーキットブレーカー方針決定</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>エラーコード一覧、例外ハンドリング設計書、リトライ規約</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">3.7</span>設計標準・規約</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>チーム共通の命名・コーディング・設計規約を定義する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>コーディング規約策定、テンプレート作成、Linter設定</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>コーディング規約書、設計テンプレート、Linter/Formatter設定ファイル</p></div></div></article>
+          </div>
+        </section>
+
+        <section class="phase" id="phase-4">
+          <header class="phase-header">
+            <div>
+              <p class="phase-kicker">Phase 04</p>
+              <h2>実装フェーズ</h2>
+            </div>
+            <span class="phase-count">4</span>
+          </header>
+          <div class="card-grid">
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">4.1</span>コード品質</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>SOLID原則・Clean Codeの実践によりコードの保守性を確保する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>設計原則の適用、リファクタリング、静的解析実施</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>静的解析レポート、リファクタリング履歴</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">4.2</span>コードレビュー</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>アーキテクチャ意図がコードに反映されることを担保する仕組みを作る</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>レビュー観点表整備、PRテンプレート策定、レビュー文化醸成</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>レビュー観点チェックリスト、PRテンプレート</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">4.3</span>開発者体験</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>開発環境のセットアップ・ローカル実行を容易にする</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>環境構築自動化、Devコンテナ整備、サンドボックス提供</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>開発環境構築手順、Dockerfile/Devcontainer定義、開発者ガイド</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">4.4</span>ビルド・CI/CD</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>ビルド・テスト・デプロイのパイプラインとブランチ戦略を設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>CI/CDパイプライン設計、ブランチ戦略選定（GitFlow/Trunk Based）、デプロイ自動化</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>パイプライン定義、ブランチ戦略ドキュメント、デプロイ手順書</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">4.5</span>ライブラリ・依存管理</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>依存ライブラリの選定基準・脆弱性管理・ライセンス遵守の仕組みを整える</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>依存パッケージ監査、脆弱性スキャン導入、ライセンスチェック</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>採用ライブラリ一覧、脆弱性管理レポート、ライセンス管理表</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">4.6</span>横断的関心事の実装</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>ロギング・認証・トランザクション等の横断機能を共通化して実装する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>ミドルウェア/AOP設計、共通ライブラリ整備、利用ガイド作成</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>共通ライブラリ、ミドルウェア仕様書、利用ガイドライン</p></div></div></article>
+          </div>
+        </section>
+
+        <section class="phase" id="phase-5">
+          <header class="phase-header">
+            <div>
+              <p class="phase-kicker">Phase 05</p>
+              <h2>テストフェーズ</h2>
+            </div>
+            <span class="phase-count">5</span>
+          </header>
+          <div class="card-grid">
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">5.1</span>ユニットテスト</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>テスタビリティを高める設計とモック戦略を確立する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>依存性注入を考慮した設計、モック/スタブの設計、TDD実践</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>ユニットテストコード、テスト設計指針、カバレッジレポート</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">5.2</span>結合テスト</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>コンポーネント間の結合性と契約遵守を検証する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>契約テスト（Consumer-Driven Contract）導入、結合テスト計画策定</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>結合テスト仕様書、契約テストコード</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">5.3</span>システムテスト</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>エンドツーエンドのシナリオでシステム全体の動作を検証する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>E2Eテストシナリオ設計、テストデータ準備、テスト自動化</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>E2Eテストシナリオ、自動テストコード、テスト結果報告書</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">5.4</span>非機能テスト</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>性能・負荷・耐久・セキュリティ要件の充足を実測で検証する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>負荷試験設計・実施、ペネトレーションテスト、性能ボトルネック分析</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>性能試験計画書、性能試験結果、セキュリティ診断レポート</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">5.5</span>テスト自動化</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>テストピラミッドに基づく自動化戦略とカバレッジ指標を設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>テスト階層別の自動化、CIへの組み込み、カバレッジ目標設定</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>テスト自動化戦略書、CI連携設定、カバレッジダッシュボード</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">5.6</span>受入テスト・本番移行</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>ユーザー受入と本番環境への安全な移行手順を計画する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>UATシナリオ作成、データ移行設計、切替リハーサル</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>UAT計画書、データ移行手順書、リリース計画書</p></div></div></article>
+          </div>
+        </section>
+
+        <section class="phase" id="phase-6">
+          <header class="phase-header">
+            <div>
+              <p class="phase-kicker">Phase 06</p>
+              <h2>運用・保守フェーズ</h2>
+            </div>
+            <span class="phase-count">6</span>
+          </header>
+          <div class="card-grid">
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">6.1</span>観測性（Observability）</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>ログ・メトリクス・トレースを統合的に収集し、SLI/SLOで運用品質を管理する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>監視項目定義、SLI/SLO設定、ダッシュボード構築</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>監視設計書、SLI/SLO定義書、運用ダッシュボード</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">6.2</span>インシデント対応</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>障害検知・対応・再発防止の仕組みを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>オンコール体制整備、ランブック作成、ポストモーテム実施</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>インシデント対応手順、ランブック、ポストモーテム記録</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">6.3</span>キャパシティ・性能管理</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>利用増に応じたスケーリングとチューニングの方針を定める</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>負荷予測、スケーリング戦略決定、性能チューニング</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>キャパシティプラン、スケーリング設定、チューニング報告書</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">6.4</span>セキュリティ運用</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>脆弱性対応・監査ログ・パッチ適用の運用プロセスを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>脆弱性スキャン定期実施、パッチ管理、監査対応</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>セキュリティ運用手順、脆弱性管理台帳、監査記録</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">6.5</span>進化的アーキテクチャ</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>アーキテクチャを継続的に変更可能な状態に保つ仕組みを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>Fitness Function定義、リファクタリング計画、モダナイゼーション推進</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>Fitness Function一覧、モダナイゼーションロードマップ</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">6.6</span>技術負債マネジメント</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>技術負債を可視化し、計画的に返済するプロセスを構築する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>技術負債の棚卸し、優先度付け、返済計画の組み込み</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>技術負債一覧、返済ロードマップ</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">6.7</span>ドキュメント維持</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>変化に追従する「生きたドキュメント」の運用を設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>ADRの継続更新、ドキュメント自動生成、レビューサイクル整備</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>最新化されたアーキテクチャドキュメント、ADR更新履歴</p></div></div></article>
+          </div>
+        </section>
+
+        <section class="phase" id="phase-7">
+          <header class="phase-header">
+            <div>
+              <p class="phase-kicker">Phase 07</p>
+              <h2>全フェーズ横断（Cross-Cutting）</h2>
+            </div>
+            <span class="phase-count">7</span>
+          </header>
+          <div class="card-grid">
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">7.1</span>アーキテクトのソフトスキル</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>技術的判断を組織内で機能させるための行動様式を確立する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>技術リーダーシップ発揮、ファシリテーション、対立調整</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>意思決定記録、技術方針プレゼン資料</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">7.2</span>ステークホルダーコミュニケーション</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>相手の関心と理解度に応じた説明様式を選択する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>経営層向け要約、開発者向け詳細説明、合意形成のための説明</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>ステークホルダー別説明資料、合意記録</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">7.3</span>ガバナンス・標準化</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>組織横断の標準・テンプレート・リファレンスを整備する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>リファレンスアーキテクチャ策定、ガイドライン整備、レビュー体制構築</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>リファレンスアーキテクチャ、設計ガイドライン、レビュー観点集</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">7.4</span>学習・キャッチアップ</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>技術トレンドを継続的に取り込む学習サイクルを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>書籍/論文/カンファレンスからの情報収集、PoC実施、社内勉強会</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>技術調査レポート、PoC成果、勉強会資料</p></div></div></article>
+            <article class="topic-card"><h3 class="topic-title"><span class="topic-no">7.5</span>メンタリング・チーム育成</h3><div class="topic-body"><div class="info-row"><span class="label"><span class="badge badge-design">設計内容</span></span><p>後進アーキテクト・設計者の育成プロセスを設計する</p></div><div class="info-row"><span class="label"><span class="badge badge-action">行動</span></span><p>1on1、設計レビューでの指導、ペア設計</p></div><div class="info-row"><span class="label"><span class="badge badge-output">成果物</span></span><p>育成計画、レビューフィードバック記録</p></div></div></article>
+          </div>
+        </section>
+
+        <p class="footer-note">
+          このHTMLは、単一ファイルで完結する構成です。GitHub Pagesで公開する場合は、任意のHTMLファイル名で配置するか、トップページにする場合は index.html として配置できます。
+        </p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
